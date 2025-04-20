@@ -1,33 +1,16 @@
-# 1. Create a namespace called "practice"
-apiVersion: v1
-kind: Namespace
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: practice
----
-# 2. Create a GitRepository source pointing to your repo
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: GitRepository
-metadata:
-  name: practice
-  namespace: flux-system
+  name: nginx
+  namespace: practice
 spec:
-  interval: 1m
-  url: https://github.com/Queenivas/practice
-  ref:
-    branch: main
----
-# 3. Create a Kustomization to apply your repo in the "practice" namespace
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: practice
-  namespace: flux-system
-spec:
-  interval: 1m
-  path: "./"   # path inside your repo (can adjust if needed)
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: practice
-  targetNamespace: practice
-  wait: true
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+  image:  nginx
+
